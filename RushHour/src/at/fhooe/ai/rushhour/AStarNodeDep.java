@@ -12,7 +12,7 @@ import java.util.*;
  * <tt>path</tt> field should be set to <tt>null</tt>. You may also wish to
  * return other information by adding additional fields to the class.
  */
-public class AStar {
+public class AStarNodeDep {
 
     /** The solution path is stored here */
     public State[] path;
@@ -32,21 +32,15 @@ public class AStar {
      * This is the constructor that performs A* search to compute a
      * solution for the given puzzle using the given heuristic.
      */
-    public AStar(Puzzle puzzle, Heuristic heuristic) {
+    public AStarNodeDep(Puzzle puzzle, Heuristic heuristic) {
 
-        // save "cheapest paths"
         var cameFrom = new HashMap<Node, Node>();
-        // cost from start node to the current node
         var gScore = new HashMap<Node, Integer>();
-        // gScore + heuristic
         var fScore = new HashMap<Node, Integer>();
-
-        // start node
         var start = puzzle.getInitNode();
         var startState = start.getState();
 
-        // comparator for order of elements in openSet based on fScore
-        // lowest fScore value shall be first
+        // comparator for order of elements in openSet
         Comparator<Node> comp = (a, b) -> {
             var aKey = a;
             var bKey = b;
@@ -72,11 +66,8 @@ public class AStar {
         openSet.add(start);
 
         while (!openSet.isEmpty()) {
-            // gets and removes first item
             var current = openSet.poll();
             var currentState = current.getState();
-
-            //currentState.print();
 
             // set solution and break if goal
             if (currentState.isGoal()) {
@@ -85,44 +76,43 @@ public class AStar {
                 break;
             }
 
-            System.out.println("depth: " + current.getDepth());
-
-            // add current node to closed list
             closedSet.add(current);
+            for(var neighbor: current.expand()) {
+                var neighborState = neighbor.getState();
 
-            // for each reachable node
-            for(var node: current.expand()) {
-                var nodeState = node.getState();
-
-                // set score start values to "infinity"
-                if (!gScore.containsKey(node)) {
-                    gScore.put(node, Integer.MAX_VALUE);
+                // set node start values to "infinity"
+                if (!gScore.containsKey(neighbor)) {
+                    gScore.put(neighbor, Integer.MAX_VALUE);
                 }
-                if (!fScore.containsKey(node)) {
-                    fScore.put(node, Integer.MAX_VALUE);
+                if (!fScore.containsKey(neighbor)) {
+                    fScore.put(neighbor, Integer.MAX_VALUE);
                 }
 
-                // skip closed node
-                if (!closedSet.contains(node)) {
-                    // if not jet in open set add state
-                    if (!openSet.contains(node)) {
-                        openSet.add(node);
-                    }
-
-                    // costs one move ??? don't know what else to do
-                    var tentative_gScore = node.getDepth(); // gScore.get(current) + 1;
-
-                    // if the value is worse than the old one skip update of values
-                    if (tentative_gScore < gScore.get(node)) {
-                        // update values
-                        cameFrom.put(node, current);
-                        gScore.put(node, tentative_gScore);
-                        fScore.put(node, gScore.get(node) + heuristic.getValue(nodeState));
-                    }
+                // ignore closed node
+                if (closedSet.contains(neighbor)) {
+                    continue;
                 }
+
+                // if not jet in open set add state
+                if (!openSet.contains(neighbor)) {
+                    openSet.add(neighbor);
+                }
+
+                // costs one move ??? don't know what else to do
+                var tentative_gScore = gScore.get(current) + 1;
+
+                // if the value is worse than the old one don't update
+                if (tentative_gScore >= gScore.get(neighbor)) {
+                    continue;
+                }
+
+                // update values
+                cameFrom.put(neighbor, current);
+                gScore.put(neighbor, tentative_gScore);
+                fScore.put(neighbor, gScore.get(neighbor) + heuristic.getValue(neighborState));
             }
         }
-        System.out.println("no solution found");
+        System.out.println("found");
         // no solution found
         this.path = null;
     }
