@@ -10,11 +10,30 @@ package at.fhooe.ai.rushhour;
  * initial node is set to <tt>null</tt>.) The total distance from the initial
  * node is equal to the depth of this node.
  */
-public class Node {
+public class Node implements Comparable<Node> {
 
   private State state;
   private int depth;
   private Node parent;
+  private int fScore = Integer.MAX_VALUE;
+
+  public int getfScore() {
+    return fScore;
+  }
+
+  public void setfScore(int fScore) {
+    this.fScore = fScore;
+  }
+
+  @Override
+  public int compareTo(Node o) {
+    int aVal = this.getfScore();
+    int bVal = o.getfScore();
+
+    if (aVal == bVal) return 0;
+    if (aVal > bVal) return 1;
+    return -1;
+  }
 
   /**
    * The main constructor for constructing a search node. You probably will never
@@ -44,6 +63,15 @@ public class Node {
   /** Returns the depth of this node. */
   public int getDepth() {
     return depth;
+  }
+
+  @Override
+  public int hashCode() {
+    return state.hashCode();
+  }
+
+  public boolean equals(Object o) {
+      return this.state.equals(((Node)o).state);
   }
 
   /**

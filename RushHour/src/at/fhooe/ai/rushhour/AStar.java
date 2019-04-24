@@ -22,7 +22,7 @@ public class AStar {
         var totalPath = new ArrayList<State>();
         while(cameFrom.containsKey(current)) {
             current = cameFrom.get(current);
-            totalPath.add(0, current.getState());
+            totalPath.add(current.getState());
         }
         path = new State[totalPath.size()];
         path = totalPath.toArray(path);
@@ -39,36 +39,19 @@ public class AStar {
         // cost from start node to the current node
         var gScore = new HashMap<Node, Integer>();
         // gScore + heuristic
-        var fScore = new HashMap<Node, Integer>();
+        //var fScore = new HashMap<Node, Integer>();
 
         // start node
         var start = puzzle.getInitNode();
         var startState = start.getState();
 
-        // comparator for order of elements in openSet based on fScore
-        // lowest fScore value shall be first
-        Comparator<Node> comp = (a, b) -> {
-            var aKey = a;
-            var bKey = b;
-//            var aKey = a.getState();
-//            var bKey = b.getState();
-
-            int aVal = fScore.get(aKey);
-            int bVal = fScore.get(bKey);
-
-            if (aVal == bVal) return 0;
-            if (aVal > bVal) return 1;
-
-            return -1;
-        };
-
         // open and closed sets
-        var openSet = new PriorityQueue<>(comp);
-        var closedSet = new PriorityQueue<>(comp);
+        var openSet = new PriorityQueue<Node>();
+        var closedSet = new PriorityQueue<Node>();
 
         // init start node
         gScore.put(start, 0);
-        fScore.put(start, heuristic.getValue(startState));
+        start.setfScore(heuristic.getValue(startState));
         openSet.add(start);
 
         while (!openSet.isEmpty()) {
@@ -82,10 +65,8 @@ public class AStar {
             if (currentState.isGoal()) {
                 System.out.println("Goal");
                 reconstructPath(cameFrom, current);
-                break;
+                return;
             }
-
-            System.out.println("depth: " + current.getDepth());
 
             // add current node to closed list
             closedSet.add(current);
@@ -97,9 +78,6 @@ public class AStar {
                 // set score start values to "infinity"
                 if (!gScore.containsKey(node)) {
                     gScore.put(node, Integer.MAX_VALUE);
-                }
-                if (!fScore.containsKey(node)) {
-                    fScore.put(node, Integer.MAX_VALUE);
                 }
 
                 // skip closed node
@@ -117,7 +95,7 @@ public class AStar {
                         // update values
                         cameFrom.put(node, current);
                         gScore.put(node, tentative_gScore);
-                        fScore.put(node, gScore.get(node) + heuristic.getValue(nodeState));
+                        node.setfScore(gScore.get(node) + heuristic.getValue(nodeState));
                     }
                 }
             }
