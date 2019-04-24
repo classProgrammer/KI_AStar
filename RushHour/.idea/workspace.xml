@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ce8eb82a-b10f-4161-ab00-410b7569e36b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/META-INF/RushHour.kotlin_module" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/at/fhooe/ai/rushhour/AStar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/at/fhooe/ai/rushhour/AStar.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/at/fhooe/ai/rushhour/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/at/fhooe/ai/rushhour/Node.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/at/fhooe/ai/rushhour/BlockingHeuristic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/at/fhooe/ai/rushhour/BlockingHeuristic.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -16,11 +13,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/at/fhooe/ai/rushhour/AStar.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1258">
               <caret line="89" column="68" lean-forward="true" selection-start-line="89" selection-start-column="68" selection-end-line="89" selection-end-column="68" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/at/fhooe/ai/rushhour/BlockingHeuristic.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="476">
+              <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
             </state>
           </provider>
         </entry>
@@ -60,8 +66,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/at/fhooe/ai/rushhour/State.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="321">
-              <caret line="195" column="2" selection-start-line="195" selection-start-column="2" selection-end-line="209" selection-end-column="3" />
+            <state relative-caret-position="95">
+              <caret line="62" column="4" lean-forward="true" selection-start-line="62" selection-start-column="4" selection-end-line="62" selection-end-column="40" />
             </state>
           </provider>
         </entry>
@@ -93,6 +99,7 @@
         <option value="$PROJECT_DIR$/src/at/fhooe/ai/rushhour/AStarNodeDep.java" />
         <option value="$PROJECT_DIR$/src/at/fhooe/ai/rushhour/Node.java" />
         <option value="$PROJECT_DIR$/src/at/fhooe/ai/rushhour/AStar.java" />
+        <option value="$PROJECT_DIR$/src/at/fhooe/ai/rushhour/BlockingHeuristic.java" />
       </list>
     </option>
   </component>
@@ -142,7 +149,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1556113886548" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1556114820026" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -188,18 +195,18 @@
       <option name="presentableId" value="Default" />
       <updated>1556001149699</updated>
       <workItem from="1556001154522" duration="14554000" />
-      <workItem from="1556112372299" duration="1513000" />
+      <workItem from="1556112372299" duration="2446000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="16067000" />
+    <option name="totallyTimeSpent" value="17000000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1839" height="1191" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.10455312" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18437324" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -208,7 +215,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.6279509" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.23890463" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -294,13 +301,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/at/fhooe/ai/rushhour/State.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="321">
-          <caret line="195" column="2" selection-start-line="195" selection-start-column="2" selection-end-line="209" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/at/fhooe/ai/rushhour/RushHour.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="786">
@@ -333,6 +333,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1258">
           <caret line="89" column="68" lean-forward="true" selection-start-line="89" selection-start-column="68" selection-end-line="89" selection-end-column="68" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/at/fhooe/ai/rushhour/State.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="62" column="4" lean-forward="true" selection-start-line="62" selection-start-column="4" selection-end-line="62" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/at/fhooe/ai/rushhour/BlockingHeuristic.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
         </state>
       </provider>
     </entry>

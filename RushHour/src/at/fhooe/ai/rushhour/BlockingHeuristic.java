@@ -7,20 +7,28 @@ package at.fhooe.ai.rushhour;
  * implemented by filling in the constructor and the <tt>getValue</tt> method.
  */
 public class BlockingHeuristic implements Heuristic {
-
   /**
    * This is the required constructor, which must be of the given form.
    */
-  public BlockingHeuristic(Puzzle puzzle) {
-    // TODO
-  }
+  public BlockingHeuristic(Puzzle puzzle) {}
 
   /**
    * This method returns the value of the heuristic function at the given state.
    */
   public int getValue(State state) {
-    // TODO
-    return 0;
+
+    if (state.isGoal()) return 0;
+
+    int[][] grid = state.getGrid();
+    Puzzle puzzle = state.getPuzzle();
+    int gridsize = puzzle.getGridSize();
+    int noOfCarsBlocking = 0;
+
+
+    // TODO: find number of cars blocking the exit
+
+
+    return noOfCarsBlocking;
   }
 
 }
