@@ -7,5 +7,5 @@ package at.fhooe.ai.rushhour;
 public interface Heuristic {
 
   /** Returns the value of the heuristic function at the given state. */
-  public int getValue(State state);
+  int getValue(State state);
 }

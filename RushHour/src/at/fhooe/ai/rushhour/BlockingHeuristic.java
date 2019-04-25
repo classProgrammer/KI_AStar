@@ -12,6 +12,10 @@ public class BlockingHeuristic implements Heuristic {
    */
   public BlockingHeuristic(Puzzle puzzle) {}
 
+
+
+
+
   /**
    * This method returns the value of the heuristic function at the given state.
    */
@@ -24,10 +28,35 @@ public class BlockingHeuristic implements Heuristic {
     int gridsize = puzzle.getGridSize();
     int noOfCarsBlocking = 0;
 
+    var isVertical = puzzle.getCarOrient(0) == true;
+    int x, y;
 
-    // TODO: find number of cars blocking the exit
+    int xStart, yStart;
 
+    if (isVertical) {
+      x = puzzle.getFixedPosition(0);
+      y = state.getVariablePosition(0);
 
+      yStart = y + puzzle.getCarSize(0);
+      for (int y_ = yStart; y_ < gridsize; y_++) {
+        int v = grid[x][y_];
+        if (! (v < 0)) {
+          ++noOfCarsBlocking;
+        }
+      }
+    }
+    else {
+      y = puzzle.getFixedPosition(0);
+      x = state.getVariablePosition(0);
+
+      xStart = x + puzzle.getCarSize(0);
+      for (int x_ = xStart; x_ < gridsize; x_++) {
+        int v = grid[x_][y];
+        if (! (v < 0)) {
+          ++noOfCarsBlocking;
+        }
+      }
+    }
     return noOfCarsBlocking;
   }
 

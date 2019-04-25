@@ -16,6 +16,15 @@ public class Node implements Comparable<Node> {
   private int depth;
   private Node parent;
   private int fScore = Integer.MAX_VALUE;
+  private int gScore = Integer.MAX_VALUE;
+
+  public int getgScore() {
+    return gScore;
+  }
+
+  public void setgScore(int gScore) {
+    this.gScore = gScore;
+  }
 
   public int getfScore() {
     return fScore;
