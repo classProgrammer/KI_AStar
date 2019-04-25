@@ -3,21 +3,8 @@ package at.fhooe.ai.rushhour;
 import java.util.*;
 
 public class AStar {
-
-    /** The solution path is stored here */
-    public State[] path;
-
-    private void reconstructPath(Map<Node, Node> cameFrom, Node current) {
-        var totalPath = new ArrayList<State>();
-        while(cameFrom.containsKey(current)) {
-            current = cameFrom.get(current);
-            totalPath.add(0, current.getState());
-        }
-        path = new State[totalPath.size()];
-        path = totalPath.toArray(path);
-    }
-
     private static final int INFINITY = Integer.MAX_VALUE;
+    public State[] path;
 
     public AStar(Puzzle puzzle, Heuristic heuristic) {
         // save "cheapest paths"
@@ -45,8 +32,8 @@ public class AStar {
             // add current node to closed list
             closedSet.add(current);
             // for each reachable node
-            for(var node: current.expand()) {
-                // set score start values to "infinity"
+            for (var node : current.expand()) {
+                // set gScore start values to "infinity"
                 if (!gScore.containsKey(node)) {
                     gScore.put(node, INFINITY);
                 }
@@ -58,15 +45,29 @@ public class AStar {
                     }
                     // if the value is worse than the old one skip update of values
                     if (node.getDepth() < gScore.get(node)) { // update values
+                        // remove node to trigger update of queue on reinsert
+                        openSet.remove(node);
                         cameFrom.put(node, current);
                         gScore.put(node, node.getDepth());
                         node.setfScore(gScore.get(node) + heuristic.getValue(node.getState()));
+                        openSet.add(node);
                     }
                 }
             }
         }
         // no solution found
         this.path = null;
+    }
+
+    // reconstructs the optimal path to the goal node
+    private void reconstructPath(Map<Node, Node> cameFrom, Node current) {
+        var totalPath = new ArrayList<State>();
+        while (cameFrom.containsKey(current)) {
+            current = cameFrom.get(current);
+            totalPath.add(0, current.getState());
+        }
+        path = new State[totalPath.size()];
+        path = totalPath.toArray(path);
     }
 
 }
