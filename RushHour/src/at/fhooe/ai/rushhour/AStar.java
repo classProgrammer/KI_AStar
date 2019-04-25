@@ -22,7 +22,7 @@ public class AStar {
         var totalPath = new ArrayList<State>();
         while(cameFrom.containsKey(current)) {
             current = cameFrom.get(current);
-            totalPath.add(current.getState());
+            totalPath.add(0, current.getState());
         }
         path = new State[totalPath.size()];
         path = totalPath.toArray(path);
