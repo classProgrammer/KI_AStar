@@ -14,7 +14,7 @@ public class BlockingHeuristic implements Heuristic {
         // per definition 1 + number of blocking cars
         int noOfCarsBlocking = 1;
         // target car has index 0
-        var isVertical = puzzle.getCarOrient(0) == true;
+        var isVertical = puzzle.getCarOrient(0);
 
         // x and y coordinates of target car
         int fixed = puzzle.getFixedPosition(0);
