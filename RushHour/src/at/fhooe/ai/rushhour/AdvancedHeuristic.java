@@ -7,6 +7,18 @@ public class AdvancedHeuristic implements Heuristic {
 
     private final int targetCarIndex = 0;
 
+    private Puzzle puzzle;
+    private int[][] grid;
+    private int gridSize;
+
+    private int cost = 1;
+    private Set<Integer> blockingCarsSetAbove = new HashSet<>();
+    private Set<Integer> blockingCarsSetBelow = new HashSet<>();
+
+    private boolean isVertical;
+    private int fixed;
+    private int variable;
+
     public AdvancedHeuristic(Puzzle puzzle) {
     }
 
@@ -20,99 +32,90 @@ public class AdvancedHeuristic implements Heuristic {
      *   - if none are blocking, still a cost of 1 because we are not at the goal position
      **/
     public int getValue(State state) {
-
         if (state.isGoal()) return 0;
 
-        var grid = state.getGrid();
-        var puzzle = state.getPuzzle();
-        var gridSize = puzzle.getGridSize();
-
-        // if puzzle is not solved, cost should be at least 1
-        var cost = 1;
-        Set<Integer> blockingCarsSetAbove = new HashSet<>();
-        Set<Integer> blockingCarsSetBelow = new HashSet<>();
-
-        var isVertical = puzzle.getCarOrient(targetCarIndex);
-        var fixed = puzzle.getFixedPosition(targetCarIndex);
-        var variable = state.getVariablePosition(targetCarIndex) + puzzle.getCarSize(targetCarIndex);
+        initStateValues(state);
 
         // starts already in front of target car
-        for (var i = variable; i < gridSize; i++) {
-            int firstOrderBlockingIndex = isVertical ?
-                    grid[fixed][i] :
-                    grid[i][fixed];
+        for (var i = variable + puzzle.getCarSize(targetCarIndex); i < gridSize; i++) {
 
-            if (indexIsNotEmptyAndNotTarget(firstOrderBlockingIndex)) {
+            int firstOrderBlockingIndex = gridAt(i, fixed);
+            if (indexIsNotEmptyAndNotExcludedIndex(firstOrderBlockingIndex, targetCarIndex)) {
 
                 var blockingCarSize = puzzle.getCarSize(firstOrderBlockingIndex);
 
-                var blockingCountAbove = -1;
-                var blockingCountBelow = -1;
+                var blockingAbove = getBlockingCount(
+                        firstOrderBlockingIndex, blockingCarSize, -blockingCarSize, blockingCarsSetAbove);
+                var blockingBelow = getBlockingCount(
+                        firstOrderBlockingIndex, blockingCarSize, 1, blockingCarsSetBelow);
 
-                if (canBePlacedAboveTargetPath(blockingCarSize, fixed)) {
-                    blockingCountAbove = 0;
-
-                    for (var gapIterator = 0; gapIterator < blockingCarSize; gapIterator++) {
-                        var secondOrderBlockingIndex = grid[puzzle.getFixedPosition(firstOrderBlockingIndex)][fixed - gapIterator - 1];
-                        if (indexIsNotEmptyAndNotTargetOrExcludedIndex(secondOrderBlockingIndex, firstOrderBlockingIndex) &&
-                                !blockingCarsSetAbove.contains(secondOrderBlockingIndex)) {
-
-                            blockingCarsSetAbove.add(secondOrderBlockingIndex);
-                            blockingCountAbove++;
-                        }
-                    }
-                }
-
-                if (canBePlacedBelowTargetPath(blockingCarSize, fixed, puzzle.getGridSize())) {
-                    blockingCountBelow = 0;
-
-                    for (var gapIterator = 0; gapIterator < blockingCarSize; gapIterator++) {
-                        var secondOrderBlockingIndex = grid[puzzle.getFixedPosition(firstOrderBlockingIndex)][fixed + gapIterator + 1];
-
-                        if (indexIsNotEmptyAndNotTargetOrExcludedIndex(secondOrderBlockingIndex, firstOrderBlockingIndex) &&
-                                !blockingCarsSetBelow.contains(secondOrderBlockingIndex)) {
-                            blockingCarsSetBelow.add(secondOrderBlockingIndex);
-                            blockingCountBelow++;
-                        }
-                    }
-                }
-
-                var numberOfBlockingCars = 0;
-
-                if (blockingCountAbove == -1 && blockingCountBelow == -1) {
-                    throw new Error("Car with Index " + firstOrderBlockingIndex + "blocks the goal for target car.");
-                } else if (blockingCountAbove == -1) {
-                    numberOfBlockingCars = blockingCountBelow;
-                    blockingCarsSetAbove.clear();
-                } else if (blockingCountBelow == -1) {
-                    numberOfBlockingCars = blockingCountAbove;
-                    blockingCarsSetBelow.clear();
-                } else {
-                    numberOfBlockingCars = Math.min(blockingCountAbove, blockingCountBelow);
-                }
-
-                cost += 1 + numberOfBlockingCars;
+                // first order + second order blocking cars
+                cost += 1 + getNumberOfBlockingCars(blockingAbove, blockingBelow, firstOrderBlockingIndex);
             }
         }
         return cost;
     }
 
-    private boolean canBePlacedAboveTargetPath(int blockingCarSize, int targetFixedPosition) {
-        return blockingCarSize <= targetFixedPosition;
+    private void initStateValues(State state) {
+        grid = state.getGrid();
+        puzzle = state.getPuzzle();
+        gridSize = puzzle.getGridSize();
+
+        // if puzzle is not solved, cost should be at least 1
+        cost = 1;
+        blockingCarsSetAbove = new HashSet<>();
+        blockingCarsSetBelow = new HashSet<>();
+
+        isVertical = puzzle.getCarOrient(targetCarIndex);
+        fixed = puzzle.getFixedPosition(targetCarIndex);
+        variable = state.getVariablePosition(targetCarIndex);// + puzzle.getCarSize(targetCarIndex);
     }
 
-    private boolean canBePlacedBelowTargetPath(int blockingCarSize, int targetFixedPosition, int gridSize) {
-        return gridSize - blockingCarSize > targetFixedPosition;
+    private int gridAt(int x, int y) {
+        return isVertical ? grid[y][x] : grid[x][y];
     }
 
-    private boolean indexIsNotEmptyAndNotTarget(int blockingIndex) {
-        return blockingIndex != -1 &&
-                blockingIndex != targetCarIndex;
+    private int getBlockingCount(
+            int firstOrderBlockingIndex, int blockingCarSize, int offset, Set<Integer> set) {
+
+        int blockingCount = 0;
+        int start = fixed + offset;
+
+        for (var gapIterator = start; gapIterator < start + blockingCarSize; gapIterator++) {
+            // car does not fit between edge of grid and target path
+            if (gapIterator < 0 || gapIterator >= gridSize) {
+                return -1;
+            }
+
+            var secondOrderBlockingIndex = gridAt(puzzle.getFixedPosition(firstOrderBlockingIndex), gapIterator);
+
+            if (indexIsNotEmptyAndNotExcludedIndex(secondOrderBlockingIndex, firstOrderBlockingIndex) &&
+                    !set.contains(secondOrderBlockingIndex)) {
+
+                set.add(secondOrderBlockingIndex);
+                blockingCount++;
+            }
+        }
+        return blockingCount;
     }
 
-    private boolean indexIsNotEmptyAndNotTargetOrExcludedIndex(int blockingIndex, int excludedIndex) {
-        return blockingIndex != -1 &&
-                blockingIndex != targetCarIndex &&
-                blockingIndex != excludedIndex;
+    private boolean indexIsNotEmptyAndNotExcludedIndex(int blockingIndex, int excludedIndex) {
+        return blockingIndex != -1 && blockingIndex != excludedIndex;
+    }
+
+    private int getNumberOfBlockingCars(int blockingCountAbove, int blockingCountBelow, int firstOrderBlockingIndex) {
+        var numberOfBlockingCars = 0;
+        if (blockingCountAbove == -1 && blockingCountBelow == -1) {
+            throw new Error("Car with Index " + firstOrderBlockingIndex + " blocks the goal for target car.");
+        } else if (blockingCountAbove == -1) {
+            numberOfBlockingCars = blockingCountBelow;
+            blockingCarsSetAbove.clear();
+        } else if (blockingCountBelow == -1) {
+            numberOfBlockingCars = blockingCountAbove;
+            blockingCarsSetBelow.clear();
+        } else {
+            numberOfBlockingCars = Math.min(blockingCountAbove, blockingCountBelow);
+        }
+        return numberOfBlockingCars;
     }
 }
