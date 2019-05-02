@@ -24,12 +24,16 @@ public class AdvancedHeuristic implements Heuristic {
 
     /* ABSTRACT:
      * Idea is similar to BlockingHeuristic:
-     * If target is at goal position return 0
+     * IF: target is at goal position return 0
      * Else:
-     * - Count the number of cars between target car and goal
-     * - Moreover, count cars perpendicular blocking first order blocking cars (only once)
-     * - Use absolute number of blocking cars + 1 as cost
-     *   - if none are blocking, still a cost of 1 because we are not at the goal position
+     * - Count the number of cars between target car and goal (first order blocking cars)
+     * - Further, count the number of cars blocking above and below the target path for the
+     *      size of corresponding first order blocking car so that it could move out of the way
+     *      (second order blocking cars)
+     * - Use the smaller second order blocking car (above/below target path)
+     * - Add the first order blocking cars and the  second order blocking cars together for
+     *      the final cost.
+     * - IF: none are blocking, return still a cost of 1 because we are not at the goal position
      **/
     public int getValue(State state) {
         if (state.isGoal()) return 0;
